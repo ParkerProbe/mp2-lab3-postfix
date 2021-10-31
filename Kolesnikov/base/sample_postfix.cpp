@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-  string expression;
+  string expression = "a-b";
   TPostfix postfix;
   double res;
 
@@ -14,8 +14,8 @@ int main()
   //cout << "Введите арифметическое выражение: ";
   //cin >> expression;
   //cout << expression << endl;
+  postfix.ToPostfix(expression);
   cout << "Арифметическое выражение: " << postfix.GetInfix() << endl;
-  postfix.ToPostfix();
   cout << "Постфиксная форма: " << postfix.GetPostfix() << endl;
   res = postfix.Calculate();
   cout << res << endl;
