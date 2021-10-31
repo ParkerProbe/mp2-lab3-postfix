@@ -3,7 +3,7 @@
 
 TEST(TPostfix, can_create_postfix)
 {
-  ASSERT_NO_THROW(TPostfix p);
+  ASSERT_NO_THROW(TPostfix p("a+b"));
 }
 TEST(TPostfix, can_get_infix)
 {
@@ -79,8 +79,8 @@ TEST(TPostfix, can_calculate_the_expression)
 }
 TEST(TPostfix, can_calculate_double) {
 	TPostfix str("0.48 + 1.12");
-  str.ToPostfix();
-	EXPECT_EQ(1.6, p.Calculate());
+	str.ToPostfix();
+	EXPECT_EQ(1.6, str.Calculate());
 }
 TEST(TPostfix, is_equal_expression_in_postfix_form)
 {

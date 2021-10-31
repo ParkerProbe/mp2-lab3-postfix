@@ -22,7 +22,8 @@ struct OpData
 class TPostfix
 {
   string infix;
-  string postfix;
+  string postfix_str;
+  vector<string> postfix;
   int stacklen;
 
   map<string, OpData> op_data = {
@@ -41,17 +42,18 @@ class TPostfix
   int Priority(const string& key);
   int Operands(const string& key);
   double ToDoubleNum(const string& str);
-  bool IfDoubPleNum(const string& str);
+  bool IfDoubleNum(const string& str);
 
 
   template<class T>
   void MakeOperation(const string& str, TStack<T>& stack, T first, T second) const;
 public:
-  TPostfix() : infix(""), postfix("") {}
+  TPostfix(const string& _infix) : infix(_infix), postfix(),postfix_str(""), stacklen(infix.size()) {}
   string GetInfix() { return infix; }
-  string GetPostfix() { return postfix; }
+  string GetPostfix() { return postfix_str; }
   void InfixAnalyzer(const string& infix) const;
-  string ToPostfix(const string& infx);
+  string ToPostfix();
+  void ChangeExpression(const string& _infix);
   double Calculate(); // Ввод переменных, вычисление по постфиксной форме
 };
 

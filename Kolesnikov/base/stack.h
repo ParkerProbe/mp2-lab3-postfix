@@ -28,7 +28,7 @@ public:
   }
   bool IsEmpty() const
   {
-    return top == 1;
+    return top == -1;
   }
   void Push(const T& item)
   {

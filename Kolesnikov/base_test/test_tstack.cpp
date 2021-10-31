@@ -25,7 +25,7 @@ TEST(TStack, can_get_elem_of_stack)
 {
 	TStack<int> tmp(1);
 	tmp.Push(10);
-	EXPECT_EQ(10, tmp.Pop());
+	EXPECT_EQ(10, tmp.PopTop());
 }
 TEST(TStack, can_check_stack_for_empty)
 {
@@ -74,15 +74,15 @@ TEST(TStack, assign_operator_change_stack_top)
 TEST(TStack, two_different_stacks_have_different_memories)
 {
 	TStack<int> st1(2), st2(3);
-  st1.Push(5);
-  st2.Push(5);
-	EXPECT_NE(&st1[0], &st2[0]);
+	st1.Push(5);
+	st2.Push(5);
+	EXPECT_NE(&st1, &st2);
 }
 TEST(TStack, pop_top_method_delete_element)
 {
 	TStack<int> st1(3);
-	while(!st.IsFull())
+	while(!st1.IsFull())
     st1.Push(3);
-  st1.PopTop();
+	st1.PopTop();
 	EXPECT_EQ(2, st1.GetSize());
 }

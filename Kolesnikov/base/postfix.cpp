@@ -15,13 +15,13 @@ void TPostfix::MakeOperation(const string& str, TStack<T>& stack, T first, T sec
   return;
 }
 
-double ToDoubleNum(const string& str)
+double TPostfix::ToDoubleNum(const string& str)
 {
   double tmp = stod(str);
   return tmp;
 }
 
-bool IfDoubleNum(const string& str)
+bool TPostfix::IfDoubleNum(const string& str)
 {
   try{
     double tmp = stod(str);
@@ -35,8 +35,6 @@ bool IfDoubleNum(const string& str)
 
 void TPostfix::InfixAnalyzer(const string& infix) const
 {
-  if(!infix.size())
-    throw EqExcepion(EqExcepion::empty_expression, "Empty expression in InfixAnalyzer");
   //Brackets
   int LBrackets = 0, RBrackets = 0;
 	for (int i = 0; i < infix.size(); i++)
@@ -54,7 +52,7 @@ void TPostfix::InfixAnalyzer(const string& infix) const
   //Make infix without ()
   string t_infix = "";
   for(char c : infix){
-    if(c!= '(' || c!= ')')
+    if(c!= '(' && c!= ')')
       t_infix+=c;
   }
   if(!(t_infix[0] == '+' || t_infix[0] == '-')) {
@@ -73,7 +71,7 @@ void TPostfix::InfixAnalyzer(const string& infix) const
   //Operators don`t go one to another
   bool op_pr = false;
   for(char c : infix){
-    if(c!= '(' || c!= ')') {
+    if(c!= '(' && c!= ')') {
       if(IsInclude(op_data, string(1,c)))
         if(op_pr){
           throw EqExcepion(EqExcepion::two_operator_side_by_side, "After operator go operator");
@@ -103,9 +101,32 @@ void TPostfix::InfixAnalyzer(const string& infix) const
 vector<string> TPostfix::Split(const string& str) const
 {
   vector <string> tmp_vec;
-  string tmp_str;
-  for(istringstream is(str); is >> tmp_str;){
-    tmp_vec.push_back(tmp_str);
+  string tmp_str = "";
+  bool isword = false;
+  for (char c : str) {
+      if (IsInclude(op_data, string(1, c))) {
+          if (isword) {
+              tmp_vec.push_back(tmp_str);
+              tmp_str = "";
+              isword = false;
+          }
+          tmp_vec.push_back(string(1, c));
+          continue;
+      }
+      else if (c == ' ') {
+          if (isword) {
+            tmp_vec.push_back(tmp_str);
+            tmp_str = "";
+            isword = false;
+          }
+      }
+      else {
+          isword = true;
+          tmp_str += c;
+      }
+  }
+  if (isword) {
+      tmp_vec.push_back(tmp_str);
   }
   return tmp_vec;
 }
@@ -131,64 +152,63 @@ bool TPostfix::IsInclude(const map<string, T>& map, const string& key) const
 }
 
 
-string TPostfix::ToPostfix(const string& _infix)
+string TPostfix::ToPostfix()
 {
-  if(!infix.size())
-    throw EqExcepion(EqExcepion::empty_expression, "Empty expression in TPostfix");
-  infix = _infix;
-  stacklen = infix.size();
-  TStack<string> StackOper(stacklen);
-  postfix = "";
-  vector <string> vec_postfix = Split(infix);
-	for (int i = 0; i < stacklen; i++)
-	{
-		if (vec_postfix[i] == "(") 
-      StackOper.Push(vec_postfix[i]);
-		else if (IsInclude(op_data, vec_postfix[i])){
-			if (StackOper.IsEmpty())
-				StackOper.Push(vec_postfix[i]); //Edit for 2 argument
-			else if (Priority(StackOper.Top()) == Priority(vec_postfix[i])){
-				postfix += StackOper.PopTop();
-				StackOper.Push(vec_postfix[i]);
-			}
-			else if (Priority(StackOper.Top()) < Priority(vec_postfix[i])){
-				StackOper.Push(vec_postfix[i]);
-			}
-			else{
-				if ((Priority(StackOper.Top()) > Priority(vec_postfix[i]))){
-					while ((!StackOper.IsEmpty())){
-						postfix += StackOper.PopTop();
-					}
-					StackOper.Push(vec_postfix[i]);
-				}
-
-			}
-		}
-		else if (vec_postfix[i] == ")"){
-			while (!StackOper.IsEmpty()){
-				postfix += StackOper.PopTop();
-			}
-			StackOper.PopTop();
-		}
-		else{
-			postfix += vec_postfix[i];
-		}
-	}
-	while (!StackOper.IsEmpty())
-	{
-		postfix += StackOper.PopTop();
-	}
-	return postfix;
+  TStack<string> OpStack(stacklen);
+  postfix.clear();
+  vector <string> vec_infix = Split(infix);
+  for (int i = 0; i < stacklen; i++)
+  {
+      if (!IsInclude(op_data, vec_infix[i])) {
+          postfix.push_back(vec_infix[i]);
+          continue;
+      }
+      if (OpStack.IsEmpty()) {
+          OpStack.Push(vec_infix[i]);
+          continue;
+      }
+      if (vec_infix[i] == "(") {
+          OpStack.Push(vec_infix[i]);
+          continue;
+      }
+      if (vec_infix[i] == ")")
+      {
+          while (OpStack.Top() != "(")
+          {
+              postfix.push_back(OpStack.PopTop());
+          }
+          OpStack.PopTop();
+          continue;
+      }
+      else
+      {
+          while (!OpStack.IsEmpty()) {
+              if ((op_data[vec_infix[i]].priority >= op_data[OpStack.Top()].priority) && (OpStack.Top() != "(")) {
+                  postfix.push_back(OpStack.PopTop());
+              }
+              else
+                  break;
+          }
+          OpStack.Push(vec_infix[i]);
+      }
+  }
+  while (!OpStack.IsEmpty())
+  {
+	  postfix.push_back(OpStack.PopTop());
+  }
+  for (string str : postfix)
+      postfix_str += str;
+  return postfix_str;
 }
+
+
 
 double TPostfix::Calculate()
 {
-  if(!postfix.size())
-        throw EqExcepion(EqExcepion::empty_expression, "Empty postfix form in Calculate");
   double first, second;
   double num;
   TStack<double> value(stacklen);
-  vector<string> elements = Split(postfix);
+  vector<string> elements = postfix;
   map<string, double> operands;
   for (string element : elements){
       if(!IsInclude(op_data, element)){
