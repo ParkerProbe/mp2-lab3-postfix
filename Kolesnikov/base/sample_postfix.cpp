@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-  string expression = "8 + 7 /  ( 2 + 5 )";
+  string expression = "-a+(cos(b))^a";
   TPostfix postfix(expression);
   double res;
 
