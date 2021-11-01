@@ -44,33 +44,6 @@ TEST(TStack, can_check_stack_for_full)
 		st.Push(5);
 	EXPECT_TRUE(st.IsFull());
 }
-TEST(TStack, can_create_copied_stack)
-{
-	TStack<int> st1(5);
-	st1.Push(5);
-	TStack<int> st2(st1);
-	EXPECT_EQ(st1, st2);
-}
-TEST(TStack, two_stacks_are_not_equal)
-{
-	TStack<int> st1(5), st2(5);
-	st1.Push(5);
-	EXPECT_NE(st1, st2);
-}
-TEST(TStack, assign_operator_change_stack_size)
-{
-	TStack<int> st1(3), st2(10);
-	st1 = st2;
-	EXPECT_NE(5, st1.GetSize());
-}
-TEST(TStack, assign_operator_change_stack_top)
-{
-	TStack<int> st1(5), st2(10);
-	while (!st1.IsFull())
-		st1.Push(5);
-	st2 = st1;
-	EXPECT_NE(-1, st2.Top());
-}
 TEST(TStack, two_different_stacks_have_different_memories)
 {
 	TStack<int> st1(2), st2(3);
@@ -82,7 +55,7 @@ TEST(TStack, pop_top_method_delete_element)
 {
 	TStack<int> st1(3);
 	while(!st1.IsFull())
-    st1.Push(3);
+		st1.Push(3);
 	st1.PopTop();
 	EXPECT_EQ(2, st1.GetSize());
 }

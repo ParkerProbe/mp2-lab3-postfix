@@ -24,7 +24,7 @@ public:
   }
   int GetSize() const
   {
-    return size;
+    return top + 1;
   }
   bool IsEmpty() const
   {

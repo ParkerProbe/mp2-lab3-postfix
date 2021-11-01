@@ -48,7 +48,7 @@ class TPostfix
   template<class T>
   void MakeOperation(const string& str, TStack<T>& stack, T first, T second) const;
 public:
-  TPostfix(const string& _infix) : infix(_infix), postfix(),postfix_str(""), stacklen(infix.size()) {}
+  TPostfix(const string& _infix) : infix(_infix), postfix(), postfix_str(""), stacklen(infix.size()) {}
   string GetInfix() { return infix; }
   string GetPostfix() { return postfix_str; }
   void InfixAnalyzer(const string& infix) const;

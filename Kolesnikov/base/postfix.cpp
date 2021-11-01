@@ -156,6 +156,7 @@ string TPostfix::ToPostfix()
 {
   TStack<string> OpStack(stacklen);
   postfix.clear();
+  postfix_str = "";
   vector <string> vec_infix = Split(infix);
   for (int i = 0; i < stacklen; i++)
   {
