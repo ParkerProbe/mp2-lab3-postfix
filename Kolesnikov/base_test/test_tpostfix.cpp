@@ -13,9 +13,8 @@ TEST(TPostfix, can_get_infix)
 
 TEST(TPostfix, can_get_postfix_1)
 {
-  string expression = "(a-b)*c";
-  TPostfix postfix(expression);
-  postfix.InfixAnalyzer(expression);
+  TPostfix str("(a-b)*c");
+  EXPECT_EQ("ab-c*", str.ToPostfix());
 }
 
 //TEST(TPostfix, can_get_postfix_2)
@@ -83,10 +82,10 @@ TEST(TPostfix, can_get_postfix_1)
 //	str.ToPostfix();
 //	EXPECT_EQ(1.6, str.Calculate());
 //}
-//TEST(TPostfix, is_equal_expression_in_postfix_form)
-//{
-//	TPostfix p1("(a+b)+(c)"), p2("a+b+c");
-//	p1.ToPostfix();
-//	p2.ToPostfix();
-//	EXPECT_EQ(p1.GetPostfix(), p2.GetPostfix());
-//}
+TEST(TPostfix, is_equal_expression_in_postfix_form)
+{
+	TPostfix p1("(a+b)+(c)"), p2("a+b+c");
+	p1.ToPostfix();
+	p2.ToPostfix();
+	EXPECT_EQ(p1.GetPostfix(), p2.GetPostfix());
+}
