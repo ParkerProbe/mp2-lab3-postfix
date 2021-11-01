@@ -28,7 +28,7 @@ class TPostfix
 
   map<string, OpData> op_data = {
     {"(",{0,0}},
-    {")",{0,0}},
+    {")",{0,-1}},
     {"+",{2,1}},
     {"-",{2,1}},
     {"*",{2,2}},
@@ -55,7 +55,7 @@ class TPostfix
   template<class T>
   void MakeOperation(const string& str, TStack<T>& stack, T first, T second, bool isdouble) const;
 public:
-  TPostfix(const string& _infix) : infix(_infix), postfix(), postfix_str(""), stacklen(infix.size()) {}
+  TPostfix(const string& _infix) : infix(_infix), postfix(), postfix_str(""), stacklen(0) {}
   string GetInfix() { return infix; }
   string GetPostfix() { return postfix_str; }
   void InfixAnalyzer(const string& infix) const;

@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-  string expression = "sin(a) + cos(ab+c)";
+  string expression = "sin(a)+cos(b)";
   TPostfix postfix(expression);
   double res;
 

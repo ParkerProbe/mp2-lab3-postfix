@@ -170,44 +170,42 @@ bool TPostfix::IsInclude(const map<string, T>& map, const string& key) const
 
 string TPostfix::ToPostfix()
 {
-  TStack<string> OpStack(stacklen);
   postfix.clear();
   postfix_str = "";
   vector <string> vec_infix = Split(infix);
+  stacklen = vec_infix.size();
+  TStack<string> OpStack(stacklen);
   for (int i = 0; i < stacklen; i++)
   {
-      if (!IsInclude(op_data, vec_infix[i])) {
-          postfix.push_back(vec_infix[i]);
-          continue;
-      }
-      if (OpStack.IsEmpty()) {
-          OpStack.Push(vec_infix[i]);
-          continue;
-      }
-      if (vec_infix[i] == "(") {
-          OpStack.Push(vec_infix[i]);
-          continue;
-      }
-      if (vec_infix[i] == ")")
-      {
-          while (OpStack.Top() != "(")
-          {
-              postfix.push_back(OpStack.PopTop());
+      string tmp = vec_infix[i];
+      if (IsInclude(op_data, vec_infix[i])) {
+          if (tmp == "(" || tmp == ")") {
+              if (tmp == "(") {
+                  OpStack.Push(tmp);
+              }
+              else {
+                  while (OpStack.Top() != "(")
+                  {
+                      postfix.push_back(OpStack.PopTop());
+                  }
+                  OpStack.PopTop();
+              }
           }
-          OpStack.PopTop();
-          continue;
+          else {
+              if (OpStack.IsEmpty())
+                  OpStack.Push(tmp);
+              else {
+                  while (!OpStack.IsEmpty() && (op_data[OpStack.Top()].priority >= op_data[tmp].priority) &&
+                      (OpStack.Top() != "(") && (OpStack.Top() != ")")) {
+                      postfix.push_back(OpStack.PopTop());
+                  }
+                  OpStack.Push(tmp);
+              }
+          }
+
       }
       else
-      {
-          while (!OpStack.IsEmpty()) {
-              if ((op_data[vec_infix[i]].priority >= op_data[OpStack.Top()].priority) && (OpStack.Top() != "(")) {
-                  postfix.push_back(OpStack.PopTop());
-              }
-              else
-                  break;
-          }
-          OpStack.Push(vec_infix[i]);
-      }
+          postfix.push_back(tmp);
   }
   while (!OpStack.IsEmpty())
   {
@@ -247,7 +245,7 @@ double TPostfix::Calculate()
       }
       else{
         if(op_data[element].operands == 2){            
-          if((element == "+")||(element == "-")&&(value.GetSize() == 1)){
+          if(((element == "+")||(element == "-")) && (value.GetSize() == 1)){
             second = value.PopTop();                // -c +c support
             first = 0.0;
           }
