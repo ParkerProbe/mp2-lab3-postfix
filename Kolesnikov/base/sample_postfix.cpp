@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-  string expression = "(a+)";
+  string expression = "8 + 7 /  ( 2 + 5 )";
   TPostfix postfix(expression);
   double res;
 

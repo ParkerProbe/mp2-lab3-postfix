@@ -1,4 +1,5 @@
 ﻿#include "postfix.h"
+#include "eq_exception.h"
 #include "stack.h"
 #include <sstream>
 #include <string>
@@ -11,8 +12,8 @@ void TPostfix::MakeOperation(const string& str, TStack<T>& stack, T first, T sec
   if(isdouble){
       if (str == "+") { stack.Push(first + second); return; }
       if (str == "-") { stack.Push(first - second); return; }
-      if (str == "/") { stack.Push(first * second); return; }
-      if (str == "*") { stack.Push(first / second); return; }
+      if (str == "/") { stack.Push(first / second); return; }
+      if (str == "*") { stack.Push(first * second); return; }
       if (str == "^") { stack.Push(pow(first,second)); return; }
   }
   else {
@@ -216,6 +217,8 @@ string TPostfix::ToPostfix()
 
 double TPostfix::Calculate()
 {
+  if(postfix_str == "")
+    throw(EqExcepion(EqExcepion::calculate_empty_postfix,"Try to calculate empty postfix"));
   double first, second;
   double num;
   TStack<double> value(stacklen);
