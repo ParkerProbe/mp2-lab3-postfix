@@ -7,14 +7,13 @@ using namespace std;
 
 int main()
 {
-  string expression = "-a+(cos(b))^a";
-  TPostfix postfix(expression);
-  double res;
-
   setlocale(LC_ALL, "Russian");
-  //cout << "Введите арифметическое выражение: ";
-  //cin >> expression;
-  //cout << expression << endl;
+  string expression;
+  double res;
+  cout << "Введите арифметическое выражение: ";
+  cin >> expression;
+  cout << expression << endl;
+  TPostfix postfix(expression);
   postfix_calc:
   try{
     postfix.ToPostfix();
@@ -42,6 +41,9 @@ int main()
   catch(bad_alloc& e){
     cout << "WARNING\n" << "Memory allocation error" << endl;
     return 1;
+  }
+  catch (...) {
+    return 4;
   }
   return 0;
 }
