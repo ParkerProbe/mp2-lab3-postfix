@@ -1,3 +1,7 @@
+#ifndef _EQ_EXCEPTION_H
+#define _EQ_EXCEPTION_H
+
+
 #include <string>
 class EqExcepion {
     public:
@@ -20,3 +24,5 @@ class EqExcepion {
             return comment;
         }
 };
+
+#endif 

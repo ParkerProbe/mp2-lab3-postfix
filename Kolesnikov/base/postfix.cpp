@@ -8,20 +8,20 @@
 template<class T>
 void TPostfix::MakeOperation(const string& str, TStack<T>& stack, T first, T second, bool isdouble) const {
   if(isdouble){
-    if(str == "+") stack.Push(first + second);
-    if(str == "-") stack.Push(first - second);
-    if(str == "/") stack.Push(first / second);
-    if(str == "*") stack.Push(first * second);
-    if(str == "^") stack.Push(pow(first , second));
+      if (str == "+") { stack.Push(first + second); return; }
+      if (str == "-") { stack.Push(first - second); return; }
+      if (str == "/") { stack.Push(first * second); return; }
+      if (str == "*") { stack.Push(first / second); return; }
+      if (str == "^") { stack.Push(pow(first,second)); return; }
   }
   else {
-    if(str == "cos") stack.Push(cos(first + second));
-    if(str == "sin") stack.Push(sin(first));
-    if(str == "tg") stack.Push(tan(first));
-    if(str == "ctg") stack.Push(1/tan(first));
-    if(str == "ln") stack.Push(log(first));
-    if(str == "sqrt") stack.Push(sqrt(first));
-    if(str == "exp") stack.Push(exp(first));
+      if (str == "cos") {stack.Push(cos(first)); return;}
+      if (str == "sin") {stack.Push(sin(first)); return;}
+      if (str == "tg") { stack.Push(tan(first)); return; }
+      if (str == "ctg") { stack.Push(1/tan(first)); return; }
+      if (str == "ln") { stack.Push(log(first)); return; }
+      if (str == "exp") { stack.Push(exp(first)); return; }
+      if (str == "sqrt") { stack.Push(sqrt(first)); return; }
   }
   return;
 }
@@ -71,31 +71,25 @@ void TPostfix::InfixAnalyzer(const string& infix) const
     if(!(c== '(' || c== ')'))
       t_infix+=c;
   }
-  if(!(t_infix[0] == '+' || t_infix[0] == '-')) {
-    for(auto map : op_data){
-      if(map.first.find(t_infix[0]) != string::npos)
-        throw EqExcepion(EqExcepion::incorrect_expression,
-         "Expression start with operator except + and -");
-    }
-  }
-  for(auto map : op_data){
-    if(map.first.find(t_infix[t_infix.size()-1] != string::npos))
-      throw EqExcepion(EqExcepion::incorrect_expression,
+  if(t_infix[0] == '/' || t_infix[0] == '*' || t_infix[0] == '^')
+      throw EqExcepion(EqExcepion::incorrect_expression,"Expression start with operator except + and -");
+  if(IsInclude(op_data, string(1,t_infix[t_infix.size()-1])))
+     throw EqExcepion(EqExcepion::incorrect_expression,
         "Expression end with operator");
-  }
+  
 
   //Operators don`t go one to another
   bool op_pr = false;
-  for(char c : infix){
-    if(!(c== '(' || c== ')')) {
-      if(IsInclude(op_data, string(1,c)))
-        if(op_pr){
-          throw EqExcepion(EqExcepion::incorrect_expression, "After operator go operator");
-        }
-        else{ op_pr = true;}
-      else { op_pr = false;}
-    }
-    else {op_pr = false; }
+  for(char c : infix) {
+      if (IsInclude(op_data, string(1, c))) {
+          if (!(c == '(' || c == ')')) {
+              if (op_pr) {
+                  throw EqExcepion(EqExcepion::incorrect_expression, "After operator go operator");
+              }
+              op_pr = true;
+          }
+      }
+    else { op_pr = false;}
   }
 
   // No open bracket before the operator
@@ -172,6 +166,7 @@ string TPostfix::ToPostfix()
 {
   postfix.clear();
   postfix_str = "";
+  InfixAnalyzer(infix);
   vector <string> vec_infix = Split(infix);
   stacklen = vec_infix.size();
   TStack<string> OpStack(stacklen);
@@ -248,12 +243,15 @@ double TPostfix::Calculate()
           if(((element == "+")||(element == "-")) && (value.GetSize() == 1)){
             second = value.PopTop();                // -c +c support
             first = 0.0;
+            MakeOperation(element, value, first, second, true); //Edit for 1 argument
           }
-          second = value.PopTop();
-          first = value.PopTop();
-          if(element == "/" && second == 0.0)
-            throw(EqExcepion(EqExcepion::zero_division, "Division by zero"));
-          MakeOperation(element, value, first, second, true); //Edit for 1 argument
+          else {
+              second = value.PopTop();
+              first = value.PopTop();
+              if (element == "/" && second == 0.0)
+                  throw(EqExcepion(EqExcepion::zero_division, "Division by zero"));
+              MakeOperation(element, value, first, second, true); //Edit for 1 argument
+          }
         }
         else{
           first = value.PopTop();

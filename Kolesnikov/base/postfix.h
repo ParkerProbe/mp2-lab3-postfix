@@ -2,7 +2,6 @@
 #define __POSTFIX_H__
 
 #include "eq_exception.h"
-
 #include <iostream>
 #include <map>
 #include <vector>

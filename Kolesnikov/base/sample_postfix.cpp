@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-  string expression = "sin(a)+cos(b)";
+  string expression = "(2-)";
   TPostfix postfix(expression);
   double res;
 
@@ -25,7 +25,7 @@ int main()
   }
   catch(const EqExcepion& e){
     if(e.GetError() == EqExcepion::incorrect_expression){
-        cout << "Warning:\n" << "code:" << e.GetError() 
+        cout << "WARNING\n" << "code:" << e.GetError() 
         << endl << "comment:" << e.GetComment() << endl;
         cout << "Please edit expression" << endl;
         string temp;
@@ -34,13 +34,13 @@ int main()
         goto postfix_calc;
     }
     else{
-       cout << "Warning:\n" << "code:" << e.GetError() 
+       cout << "WARNING\n" << "code:" << e.GetError() 
         << endl << "comment:" << e.GetComment() << endl;
         return 2;
     }
   }
   catch(bad_alloc& e){
-    cout << "Warning:\n" << "Memory allocation error" << endl;
+    cout << "WARNING\n" << "Memory allocation error" << endl;
     return 1;
   }
   return 0;
