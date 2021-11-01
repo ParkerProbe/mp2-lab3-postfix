@@ -6,7 +6,8 @@
 
 
 template<class T>
-void TPostfix::MakeOperation(const string& str, TStack<T>& stack, T first, T second, bool isdouble) const {
+void TPostfix::MakeOperation(const string& str, TStack<T>& stack, T first, T second, bool isdouble) const 
+{
   if(isdouble){
       if (str == "+") { stack.Push(first + second); return; }
       if (str == "-") { stack.Push(first - second); return; }
@@ -243,14 +244,14 @@ double TPostfix::Calculate()
           if(((element == "+")||(element == "-")) && (value.GetSize() == 1)){
             second = value.PopTop();                // -c +c support
             first = 0.0;
-            MakeOperation(element, value, first, second, true); //Edit for 1 argument
+            MakeOperation(element, value, first, second, true);
           }
           else {
               second = value.PopTop();
               first = value.PopTop();
               if (element == "/" && second == 0.0)
                   throw(EqExcepion(EqExcepion::zero_division, "Division by zero"));
-              MakeOperation(element, value, first, second, true); //Edit for 1 argument
+              MakeOperation(element, value, first, second, true);
           }
         }
         else{

@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-  string expression = "(2-)";
+  string expression = "(a+)";
   TPostfix postfix(expression);
   double res;
 
