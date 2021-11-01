@@ -39,7 +39,8 @@ class TPostfix
     {"sqrt",{1,3}},
     {"tg",{1,3}},
     {"ctg",{1,3}},
-    {"ln",{1,4}}
+    {"ln",{1,4}},
+    {"mdl",{1,5}}
   };
 
   template<class T>

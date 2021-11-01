@@ -24,6 +24,7 @@ void TPostfix::MakeOperation(const string& str, TStack<T>& stack, T first, T sec
     if (str == "ln") { stack.Push(log(first)); return; }
     if (str == "exp") { stack.Push(exp(first)); return; }
     if (str == "sqrt") { stack.Push(sqrt(first)); return; }
+    if (str == "mdl") {stack.Push(fabs(first)); return;}
   }
   return;
 }
