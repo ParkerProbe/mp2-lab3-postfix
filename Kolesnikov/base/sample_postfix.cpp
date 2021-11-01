@@ -17,26 +17,26 @@ int main()
   //cout << expression << endl;
   postfix_calc:
   try{
-      postfix.ToPostfix();
-      cout << "Арифметическое выражение: " << postfix.GetInfix() << endl;
-      cout << "Постфиксная форма: " << postfix.GetPostfix() << endl;
-      res = postfix.Calculate();
-      cout << res << endl;
+    postfix.ToPostfix();
+    cout << "Арифметическое выражение: " << postfix.GetInfix() << endl;
+    cout << "Постфиксная форма: " << postfix.GetPostfix() << endl;
+    res = postfix.Calculate();
+    cout << res << endl;
   }
   catch(const EqExcepion& e){
     if(e.GetError() == EqExcepion::incorrect_expression){
-        cout << "WARNING\n" << "code:" << e.GetError() 
-        << endl << "comment:" << e.GetComment() << endl;
-        cout << "Please edit expression" << endl;
-        string temp;
-        cin >> temp;
-        postfix.ChangeExpression(temp);
-        goto postfix_calc;
+      cout << "WARNING\n" << "code:" << e.GetError() 
+      << endl << "comment:" << e.GetComment() << endl;
+      cout << "Please edit expression" << endl;
+      string temp;
+      cin >> temp;
+      postfix.ChangeExpression(temp);
+      goto postfix_calc;
     }
     else{
-       cout << "WARNING\n" << "code:" << e.GetError() 
-        << endl << "comment:" << e.GetComment() << endl;
-        return 2;
+      cout << "WARNING\n" << "code:" << e.GetError() 
+      << endl << "comment:" << e.GetComment() << endl;
+      return 2;
     }
   }
   catch(bad_alloc& e){
