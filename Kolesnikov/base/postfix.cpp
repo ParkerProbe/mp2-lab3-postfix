@@ -6,14 +6,30 @@
 
 
 template<class T>
-void TPostfix::MakeOperation(const string& str, TStack<T>& stack, T first, T second) const {
-  if(str == "+") stack.Push(first + second);
-  if(str == "-") stack.Push(first - second);
-  if(str == "/") stack.Push(first / second);
-  if(str == "*") stack.Push(first * second);
-  if(str == "^") stack.Push(pow(first , second));
+void TPostfix::MakeOperation(const string& str, TStack<T>& stack, T first, T second, bool isdouble) const {
+  if(isdouble){
+    if(str == "+") stack.Push(first + second);
+    if(str == "-") stack.Push(first - second);
+    if(str == "/") stack.Push(first / second);
+    if(str == "*") stack.Push(first * second);
+    if(str == "^") stack.Push(pow(first , second));
+  }
+  else {
+    if(str == "cos") stack.Push(cos(first + second));
+    if(str == "sin") stack.Push(sin(first));
+    if(str == "tg") stack.Push(tan(first));
+    if(str == "ctg") stack.Push(1/tan(first));
+    if(str == "ln") stack.Push(log(first));
+    if(str == "sqrt") stack.Push(sqrt(first));
+    if(str == "exp") stack.Push(exp(first));
+  }
   return;
 }
+
+void TPostfix::ChangeExpression(const string& _infix){
+  infix = _infix;
+}
+
 
 double TPostfix::ToDoubleNum(const string& str)
 {
@@ -45,36 +61,36 @@ void TPostfix::InfixAnalyzer(const string& infix) const
 			RBrackets++;
 	}
 	if (LBrackets != RBrackets) {
-		throw EqExcepion(EqExcepion::zero_division, "Differnt count of left and right brackets");
+		throw EqExcepion(EqExcepion::incorrect_expression, "Differnt count of left and right brackets");
   }
 
   //Expression don`t start and end with operation (start: except + and -)
   //Make infix without ()
   string t_infix = "";
   for(char c : infix){
-    if(c!= '(' && c!= ')')
+    if(!(c== '(' || c== ')'))
       t_infix+=c;
   }
   if(!(t_infix[0] == '+' || t_infix[0] == '-')) {
     for(auto map : op_data){
       if(map.first.find(t_infix[0]) != string::npos)
-        throw EqExcepion(EqExcepion::start_with_incorrect_operator,
+        throw EqExcepion(EqExcepion::incorrect_expression,
          "Expression start with operator except + and -");
     }
   }
   for(auto map : op_data){
     if(map.first.find(t_infix[t_infix.size()-1] != string::npos))
-      throw EqExcepion(EqExcepion::end_with_operator,
+      throw EqExcepion(EqExcepion::incorrect_expression,
         "Expression end with operator");
   }
 
   //Operators don`t go one to another
   bool op_pr = false;
   for(char c : infix){
-    if(c!= '(' && c!= ')') {
+    if(!(c== '(' || c== ')')) {
       if(IsInclude(op_data, string(1,c)))
         if(op_pr){
-          throw EqExcepion(EqExcepion::two_operator_side_by_side, "After operator go operator");
+          throw EqExcepion(EqExcepion::incorrect_expression, "After operator go operator");
         }
         else{ op_pr = true;}
       else { op_pr = false;}
@@ -92,7 +108,7 @@ void TPostfix::InfixAnalyzer(const string& infix) const
       open_bracket_pr = false;
       if(c != ')' && IsInclude(op_data, string(1,c)))
         if(open_bracket_pr)
-          throw EqExcepion(EqExcepion::bracket_mistake, "Operator after the open bracket");
+          throw EqExcepion(EqExcepion::incorrect_expression, "Operator after the open bracket");
     }
   }
 }
@@ -230,9 +246,21 @@ double TPostfix::Calculate()
         }
       }
       else{
-        second = value.PopTop();
-        first = value.PopTop();
-        MakeOperation(element, value, first, second); //Edit for 1 argument
+        if(op_data[element].operands == 2){            
+          if((element == "+")||(element == "-")&&(value.GetSize() == 1)){
+            second = value.PopTop();                // -c +c support
+            first = 0.0;
+          }
+          second = value.PopTop();
+          first = value.PopTop();
+          if(element == "/" && second == 0.0)
+            throw(EqExcepion(EqExcepion::zero_division, "Division by zero"));
+          MakeOperation(element, value, first, second, true); //Edit for 1 argument
+        }
+        else{
+          first = value.PopTop();
+          MakeOperation(element, value, first, 0.0, false);
+        }
       }
       
   }
