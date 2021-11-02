@@ -1,4 +1,4 @@
-﻿#include "postfix.h"
+#include "postfix.h"
 #include "eq_exception.h"
 #include "stack.h"
 #include <sstream>
@@ -7,7 +7,8 @@
 
 
 template<class T>
-void TPostfix::MakeOperation(const string& str, TStack<T>& stack, T first, T second, bool isdouble) const 
+void TPostfix::MakeOperation(const string& str, TStack<T>& stack,
+ T first, T second, bool isdouble) const 
 {
   if(isdouble){
     if (str == "+") { stack.Push(first + second); return; }
@@ -51,7 +52,6 @@ bool TPostfix::IfDoubleNum(const string& str)
   }
 }
 
-
 void TPostfix::InfixAnalyzer(const string& infix) const
 {
   //Brackets
@@ -63,7 +63,8 @@ void TPostfix::InfixAnalyzer(const string& infix) const
 			RBrackets++;
 	}
 	if (LBrackets != RBrackets) {
-		throw EqExcepion(EqExcepion::incorrect_expression, "Differnt count of left and right brackets");
+		throw EqExcepion(EqExcepion::incorrect_expression,
+     "Differnt count of left and right brackets");
   }
 
   //Expression don`t start and end with operation (start: except + and -)
@@ -86,11 +87,13 @@ void TPostfix::InfixAnalyzer(const string& infix) const
   for(char c : infix) {
     if (IsInclude(op_data, string(1, c))) {
         if (!(c == '(' || c == ')')) {
-            if (op_pr) {
-                throw EqExcepion(EqExcepion::incorrect_expression, "After operator go operator");
-            }
-            op_pr = true;
+          if (op_pr) {
+            throw EqExcepion(EqExcepion::incorrect_expression,
+             "After operator go operator");
+          }
+          op_pr = true;
         }
+        else {op_pr = false; }
     }
     else { op_pr = false;}
   }
@@ -105,12 +108,12 @@ void TPostfix::InfixAnalyzer(const string& infix) const
       open_bracket_pr = false;
       if((c != ')') && IsInclude(op_data, string(1,c))) {
         if(open_bracket_pr)
-          throw EqExcepion(EqExcepion::incorrect_expression, "Operator after the open bracket");
+          throw EqExcepion(EqExcepion::incorrect_expression,
+           "Operator after the open bracket");
       }
     }
   }
 }
-
 
 vector<string> TPostfix::Split(const string& str) const
 {
@@ -165,7 +168,6 @@ bool TPostfix::IsInclude(const map<string, T>& map, const string& key) const
   return false;
 }
 
-
 string TPostfix::ToPostfix()
 {
   postfix.clear();
@@ -176,7 +178,7 @@ string TPostfix::ToPostfix()
   TStack<string> OpStack(stacklen);
   for (int i = 0; i < stacklen; i++) {
     string tmp = vec_infix[i];
-    if (IsInclude(op_data, vec_infix[i])) {
+    if (IsInclude(op_data, tmp)) {
       if (tmp == "(" || tmp == ")") {
         if (tmp == "(") {
           OpStack.Push(tmp);
@@ -212,12 +214,11 @@ for (string str : postfix)
 return postfix_str;
 }
 
-
-
 double TPostfix::Calculate()
 {
   if(postfix_str == "")
-    throw(EqExcepion(EqExcepion::calculate_empty_postfix,"Try to calculate empty postfix"));
+    throw(EqExcepion(EqExcepion::calculate_empty_postfix,
+    "Try to calculate empty postfix"));
   double first, second;
   double num;
   TStack<double> value(stacklen);
@@ -264,4 +265,3 @@ double TPostfix::Calculate()
   }
 return value.PopTop();
 }
-
