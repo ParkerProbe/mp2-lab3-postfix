@@ -30,10 +30,10 @@ void TPostfix::MakeOperation(const string& str, TStack<T>& stack,
   return;
 }
 
-void TPostfix::ChangeExpression(const string& _infix){
+void TPostfix::ChangeExpression(const string& _infix)
+{
   infix = _infix;
 }
-
 
 double TPostfix::ToDoubleNum(const string& str)
 {
@@ -86,14 +86,14 @@ void TPostfix::InfixAnalyzer(const string& infix) const
   bool op_pr = false;
   for(char c : infix) {
     if (IsInclude(op_data, string(1, c))) {
-        if (!(c == '(' || c == ')')) {
-          if (op_pr) {
-            throw EqExcepion(EqExcepion::incorrect_expression,
-             "After operator go operator");
-          }
-          op_pr = true;
+      if (!(c == '(' || c == ')')) {
+        if (op_pr) {
+          throw EqExcepion(EqExcepion::incorrect_expression,
+            "After operator go operator");
         }
-        else {op_pr = false; }
+        op_pr = true;
+      }
+      else {op_pr = false; }
     }
     else { op_pr = false;}
   }
@@ -143,7 +143,7 @@ vector<string> TPostfix::Split(const string& str) const
     }
   }
   if (isword) {
-      tmp_vec.push_back(tmp_str);
+    tmp_vec.push_back(tmp_str);
   }
   return tmp_vec;
 }
